@@ -36,6 +36,8 @@ import {
 import { useGetStatusQuery } from "@/services/chatApi";
 import { Socket, io } from "socket.io-client";
 import Markdown from "react-markdown";
+import { Provider } from "react-redux";
+import { store } from "@/services/store";
 
 // Message type definition
 interface Message {
@@ -160,7 +162,8 @@ const defaultSuggestions: Suggestion[] = [
     },
 ];
 
-const serverBaseURL: string = process.env.NEXT_PUBLIC_SERVER_BASE_URL ?? "http://localhost:9999";
+const serverBaseURL: string =
+    process.env.NEXT_PUBLIC_SERVER_BASE_URL ?? "http://localhost:9999";
 
 export default function ChatPage() {
     const [showInfo, setShowInfo] = useState(false);
@@ -295,172 +298,179 @@ export default function ChatPage() {
     const { data: statusData, isLoading: isStatusLoading } = useGetStatusQuery();
 
     return (
-        <main className="container mx-auto px-4 py-8 max-w-[90vw]">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div className="md:col-span-2">
-                    <Card className="h-[70vh] flex flex-col">
-                        <CardHeader className="bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-t-lg">
-                            <CardTitle className="flex items-center">
-                                <div className="bg-white p-1 rounded-full mr-2">
-                                    <div
-                                        className={`${
-                                            isStatusLoading
-                                                ? "bg-gray-400"
-                                                : statusData?.healthy
-                                                  ? "bg-green-500"
-                                                  : "bg-red-500"
-                                        } h-3 w-3 rounded-full`}
-                                    ></div>
-                                </div>
-                                ClimateBot (
-                                {isStatusLoading ? "connecting" : statusData?.message})
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="ml-auto text-white hover:bg-white/20"
-                                    onClick={() => setShowInfo(!showInfo)}
-                                >
-                                    <Info className="h-4 w-4" />
-                                </Button>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="overflow-auto p-0 flex-grow relative">
-                            {showInfo && (
-                                <div className="bg-blue-50 p-4 border-b border-blue-100 sticky top-0 z-10 max-w-full">
-                                    <h3 className="font-medium text-blue-800 mb-2">
-                                        About ClimateBot
-                                    </h3>
-                                    <p className="text-sm text-blue-700">
-                                        I'm an AI assistant focused on climate change
-                                        education. Ask me anything about climate science,
-                                        personal impact, or solutions. I'm here to help
-                                        you understand climate issues and find ways to
-                                        make a difference.
-                                    </p>
-                                </div>
-                            )}
-
-                            <div className="p-4 space-y-4">
-                                {messages.length === 0 ? (
-                                    <div className="text-center text-gray-500 my-8">
-                                        <p>
-                                            Start a conversation with ClimateBot or try
-                                            one of the suggested questions below.
+        <Provider store={store}>
+            <main className="container mx-auto px-4 py-8 max-w-[90vw]">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div className="md:col-span-2">
+                        <Card className="h-[70vh] flex flex-col">
+                            <CardHeader className="bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-t-lg">
+                                <CardTitle className="flex items-center">
+                                    <div className="bg-white p-1 rounded-full mr-2">
+                                        <div
+                                            className={`${
+                                                isStatusLoading
+                                                    ? "bg-gray-400"
+                                                    : statusData?.healthy
+                                                    ? "bg-green-500"
+                                                    : "bg-red-500"
+                                            } h-3 w-3 rounded-full`}
+                                        ></div>
+                                    </div>
+                                    ClimateBot (
+                                    {isStatusLoading ? "connecting" : statusData?.message}
+                                    )
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="ml-auto text-white hover:bg-white/20"
+                                        onClick={() => setShowInfo(!showInfo)}
+                                    >
+                                        <Info className="h-4 w-4" />
+                                    </Button>
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="overflow-auto p-0 flex-grow relative">
+                                {showInfo && (
+                                    <div className="bg-blue-50 p-4 border-b border-blue-100 sticky top-0 z-10 max-w-full">
+                                        <h3 className="font-medium text-blue-800 mb-2">
+                                            About ClimateBot
+                                        </h3>
+                                        <p className="text-sm text-blue-700">
+                                            I'm an AI assistant focused on climate change
+                                            education. Ask me anything about climate
+                                            science, personal impact, or solutions. I'm
+                                            here to help you understand climate issues and
+                                            find ways to make a difference.
                                         </p>
                                     </div>
-                                ) : (
-                                    messages.map((message) => (
-                                        <div
-                                            key={message.id}
-                                            className={`flex ${
-                                                message.role === "user"
-                                                    ? "justify-end"
-                                                    : "justify-start"
-                                            }`}
-                                        >
+                                )}
+
+                                <div className="p-4 space-y-4">
+                                    {messages.length === 0 ? (
+                                        <div className="text-center text-gray-500 my-8">
+                                            <p>
+                                                Start a conversation with ClimateBot or
+                                                try one of the suggested questions below.
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        messages.map((message) => (
                                             <div
-                                                className={`whitespace-pre-wrap max-w-[80%] rounded-lg p-3 ${
+                                                key={message.id}
+                                                className={`flex ${
                                                     message.role === "user"
-                                                        ? "bg-blue-500 text-white"
-                                                        : "bg-gray-100 text-gray-800"
+                                                        ? "justify-end"
+                                                        : "justify-start"
                                                 }`}
                                             >
-                                                <Markdown>{message.content}</Markdown>
                                                 <div
-                                                    className={`flex justify-between mt-2 text-xs text-gray-${
+                                                    className={`whitespace-pre-wrap max-w-[80%] rounded-lg p-3 ${
                                                         message.role === "user"
-                                                            ? "200"
-                                                            : "800"
+                                                            ? "bg-blue-500 text-white"
+                                                            : "bg-gray-100 text-gray-800"
                                                     }`}
                                                 >
-                                                    <div className={``}>
-                                                        {new Date(
-                                                            parseInt(message.id),
-                                                        ).toLocaleTimeString([], {
-                                                            hour: "2-digit",
-                                                            minute: "2-digit",
-                                                        })}
-                                                    </div>
-                                                    <div className={``}>
-                                                        {message.role === "user"
-                                                            ? "You"
-                                                            : "ClimateBot"}
+                                                    <Markdown>{message.content}</Markdown>
+                                                    <div
+                                                        className={`flex justify-between mt-2 text-xs text-gray-${
+                                                            message.role === "user"
+                                                                ? "200"
+                                                                : "800"
+                                                        }`}
+                                                    >
+                                                        <div className={``}>
+                                                            {new Date(
+                                                                parseInt(message.id),
+                                                            ).toLocaleTimeString([], {
+                                                                hour: "2-digit",
+                                                                minute: "2-digit",
+                                                            })}
+                                                        </div>
+                                                        <div className={``}>
+                                                            {message.role === "user"
+                                                                ? "You"
+                                                                : "ClimateBot"}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))
-                                )}
-                                {isLoading && (
-                                    <div className="flex justify-start">
-                                        <div className="max-w-[80%] rounded-lg p-3 bg-gray-100 text-gray-800">
-                                            <div className="flex flex-col space-y-2">
-                                                <div className="flex space-x-2">
-                                                    <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce"></div>
-                                                    <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
-                                                    <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
-                                                </div>
-                                                {typingStatus && (
-                                                    <div className="text-xs text-gray-500">
-                                                        {typingStatus}
+                                        ))
+                                    )}
+                                    {isLoading && (
+                                        <div className="flex justify-start">
+                                            <div className="max-w-[80%] rounded-lg p-3 bg-gray-100 text-gray-800">
+                                                <div className="flex flex-col space-y-2">
+                                                    <div className="flex space-x-2">
+                                                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce"></div>
+                                                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
+                                                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
                                                     </div>
-                                                )}
+                                                    {typingStatus && (
+                                                        <div className="text-xs text-gray-500">
+                                                            {typingStatus}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
-                                <div ref={messagesEndRef} />
-                            </div>
-                        </CardContent>
-                        <div className="p-4 border-t">
-                            <form onSubmit={handleSubmit} className="flex gap-2">
-                                <input
-                                    className="flex-grow px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    value={input}
-                                    onChange={handleInputChange}
-                                    placeholder="Ask about climate change..."
-                                    disabled={isLoading}
-                                />
-                                <Button
-                                    type="submit"
-                                    className="bg-green-500 hover:bg-green-600"
-                                    disabled={isLoading || !input.trim()}
-                                >
-                                    <Send className="h-4 w-4" />
-                                </Button>
-                            </form>
-                        </div>
-                    </Card>
-                </div>
-
-                <div className="md:col-span-1">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-lg">Suggested Questions</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-2">
-                                {suggestions.map((suggestion, index) => (
-                                    <Button
-                                        key={index}
-                                        variant="outline"
-                                        className="w-full justify-start text-left text-sm h-[100%]"
-                                        onClick={() =>
-                                            handleSuggestion(suggestion.content)
-                                        }
+                                    )}
+                                    <div ref={messagesEndRef} />
+                                </div>
+                            </CardContent>
+                            <div className="p-4 border-t">
+                                <form onSubmit={handleSubmit} className="flex gap-2">
+                                    <input
+                                        className="flex-grow px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        value={input}
+                                        onChange={handleInputChange}
+                                        placeholder="Ask about climate change..."
                                         disabled={isLoading}
+                                    />
+                                    <Button
+                                        type="submit"
+                                        className="bg-green-500 hover:bg-green-600"
+                                        disabled={isLoading || !input.trim()}
                                     >
-                                        <DynamicIcon iconName={suggestion.lucideIcon} />
-                                        <span className="ml-2 whitespace-normal break-words">
-                                            {suggestion.content}
-                                        </span>
+                                        <Send className="h-4 w-4" />
                                     </Button>
-                                ))}
+                                </form>
                             </div>
-                        </CardContent>
-                    </Card>
+                        </Card>
+                    </div>
+
+                    <div className="md:col-span-1">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-lg">
+                                    Suggested Questions
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-2">
+                                    {suggestions.map((suggestion, index) => (
+                                        <Button
+                                            key={index}
+                                            variant="outline"
+                                            className="w-full justify-start text-left text-sm h-[100%]"
+                                            onClick={() =>
+                                                handleSuggestion(suggestion.content)
+                                            }
+                                            disabled={isLoading}
+                                        >
+                                            <DynamicIcon
+                                                iconName={suggestion.lucideIcon}
+                                            />
+                                            <span className="ml-2 whitespace-normal break-words">
+                                                {suggestion.content}
+                                            </span>
+                                        </Button>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </Provider>
     );
 }
