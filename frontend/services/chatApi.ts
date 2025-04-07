@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { StatusResponse, Chat } from "./types";
 
+const serverBaseURL: string = process.env.SERVER_BASE_URL ?? "http://localhost:9999";
+
 export const chatApi = createApi({
     reducerPath: "chatApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:9999/" }),
-    endpoints: (builder) => ({
+    baseQuery: fetchBaseQuery({ baseUrl: serverBaseURL }), endpoints: (builder) => ({
         getStatus: builder.query<StatusResponse, void>({
             query: () => "status",
         }),

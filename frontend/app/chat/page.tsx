@@ -160,6 +160,8 @@ const defaultSuggestions: Suggestion[] = [
     },
 ];
 
+const serverBaseURL: string = process.env.SERVER_BASE_URL ?? "http://localhost:9999";
+
 export default function ChatPage() {
     const [showInfo, setShowInfo] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
@@ -173,7 +175,7 @@ export default function ChatPage() {
     // Setup Socket.IO connection
     useEffect(() => {
         // Create socket connection
-        const socket = io("http://localhost:9999");
+        const socket = io(serverBaseURL);
         socketRef.current = socket;
 
         // Handle connection established
