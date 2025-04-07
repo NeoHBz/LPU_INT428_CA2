@@ -318,24 +318,27 @@ async function generateResponse(): Promise<string | null> {
     // Generate AI response
     let prompt = `
     Current date and time: ${dayjs().format("YYYY-MM-DD HH:mm:ss")}
-    You are a friendly and knowledgeable weather chatbot that can:
-    1. Educate users about weather and climate change
-    2. Provide weather information
-    3. Have natural conversations about weather-related topics
+    You are a friendly and knowledgeable weather chatbot that provides accurate weather information in a conversational, natural tone. You should:
+        1. Provide weather information directly without narrating actions
+        2. Speak conversationally as if you're talking to a friend
+        3. Be concise but helpful
+        4. Educate users about weather and climate when relevant
+    
     Chat history:
-    ${chatHistory.map((msg) => `${msg.role}: ${msg.content}`).join("\n")}
+        ${chatHistory.map((msg) => `${msg.role}: ${msg.content}`).join("\n")}
     User: ${userMessage}`;
+    
     if (weatherData && weatherData.isWeatherQuery) {
         prompt += `
-
-Here is the raw API data for the weather query:
-${JSON.stringify(weatherData)}
-Use this real-time weather data to answer the user's query following the instructions below:
-1. Use only the information provided in the API data.
-2. Provide a clear and concise response.
-3. Avoid unnecessary details or jargon.
-4. Use only Celsius for temperature.
-`;
+    
+    Here is the raw API data for the weather query:
+        ${JSON.stringify(weatherData)}
+    Use this real-time weather data to answer the user's query by:
+    1. Going straight to the weather information without filler text
+    2. Presenting the information naturally without scripted phrases
+    3. Using only Celsius for temperature
+    4. Keeping your response conversational and straightforward
+    `;
     }
     try {
         const result = await model.generateContent(prompt);
@@ -377,6 +380,9 @@ async function generateSuggestions(
 Generate 5 suggested messages a user might send to a weather and climate chatbot.
 Context: ${context}
 The suggestions should be diverse and helpful for continuing the conversation.
+Suggestions should be limited to / or include:
+    1. LIMIT: Weather/Climate data ranging from today's to this weeks'; no further than that
+    2. INCLUDE: at least 2 suggestions that revolves around the topic of "Climate Change" instead of just "Weather" conditions
 
 For each suggestion, also provide an appropriate icon from this list (not strictly adhering to the list, but use them as a reference):
 - Info: For general information questions
@@ -427,7 +433,6 @@ Return your answer in JSON format that can be parsed with JSON.parse():
         // Validate suggestions
         const validSuggestions = suggestions.filter((s) => s.content && s.lucideIcon);
 
-        console.log("Generated suggestions with icons:", validSuggestions);
 
         return validSuggestions;
     } catch (error: any) {
