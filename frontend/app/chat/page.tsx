@@ -305,8 +305,8 @@ export default function ChatPage() {
                                             isStatusLoading
                                                 ? "bg-gray-400"
                                                 : statusData?.healthy
-                                                ? "bg-green-500"
-                                                : "bg-red-500"
+                                                  ? "bg-green-500"
+                                                  : "bg-red-500"
                                         } h-3 w-3 rounded-full`}
                                     ></div>
                                 </div>

@@ -16,8 +16,8 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
         origin: "*", // Update this with your frontend origin in production
-        methods: ["GET", "POST"]
-    }
+        methods: ["GET", "POST"],
+    },
 });
 
 const middlewares: express.RequestHandler[] = [
@@ -46,7 +46,32 @@ interface Message {
 
 interface Suggestion {
     content: string;
-    lucideIcon: "Send" | "Info" | "Home" | "Thermometer" | "Lightbulb" | "CloudRain" | "Sun" | "Leaf" | "Wind" | "Droplet" | "Utensils" | "Globe" | "Recycle" | "Zap" | "Trees" | "Car" | "Factory" | "Fish" | "CloudLightning" | "Battery" | "Sprout" | "Trash2" | "Map" | "Waves" | "Apple";
+    lucideIcon:
+        | "Send"
+        | "Info"
+        | "Home"
+        | "Thermometer"
+        | "Lightbulb"
+        | "CloudRain"
+        | "Sun"
+        | "Leaf"
+        | "Wind"
+        | "Droplet"
+        | "Utensils"
+        | "Globe"
+        | "Recycle"
+        | "Zap"
+        | "Trees"
+        | "Car"
+        | "Factory"
+        | "Fish"
+        | "CloudLightning"
+        | "Battery"
+        | "Sprout"
+        | "Trash2"
+        | "Map"
+        | "Waves"
+        | "Apple";
 }
 
 interface Chat {
@@ -185,10 +210,10 @@ io.on("connection", (socket: Socket) => {
     console.log(`New client connected: ${socket.id}`);
     const userId = uuidv4();
     connectedClients.push({ socket, userId });
-    
+
     // Send initial connection acknowledgement
     socket.emit("connection_established", { userId });
-    
+
     // Handle user message
     socket.on("user_message", async (data: { message: string }) => {
         try {
@@ -203,37 +228,37 @@ io.on("connection", (socket: Socket) => {
                             content: data.message,
                         },
                     ],
-                    suggestions: [] // Initialize empty suggestions
+                    suggestions: [], // Initialize empty suggestions
                 };
             } else {
                 // Add to existing chat
                 activeChat.history.push({ role: "User", content: data.message });
             }
-            
+
             // Notify that AI is typing
             socket.emit("ai_typing", { isTyping: true });
-            
+
             // Generate response
             const response = await generateResponse();
-            
+
             // AI is no longer typing
             socket.emit("ai_typing", { isTyping: false });
-            
+
             // Add to chat history and emit response
             activeChat.history.push({ role: "Assistant", content: response });
-            
+
             // Generate suggestions
             const suggestions = await generateSuggestions(activeChat.history);
 
             // Update suggestions in active chat and emit
             activeChat.suggestions = suggestions;
             socket.emit("new_suggestion", { suggestions });
-            
+
             // Send complete response
-            socket.emit("ai_response", { 
-                response, 
+            socket.emit("ai_response", {
+                response,
                 suggestions,
-                chatHistory: activeChat.history 
+                chatHistory: activeChat.history,
             });
         } catch (error: any) {
             console.error("Message processing error:", error.message);
@@ -242,11 +267,12 @@ io.on("connection", (socket: Socket) => {
         }
     });
 
-    
     // Handle client disconnect
     socket.on("disconnect", () => {
         console.log(`Client disconnected: ${socket.id}`);
-        const index = connectedClients.findIndex(client => client.socket.id === socket.id);
+        const index = connectedClients.findIndex(
+            (client) => client.socket.id === socket.id,
+        );
         if (index !== -1) {
             connectedClients.splice(index, 1);
         }
@@ -275,20 +301,20 @@ async function generateResponse(): Promise<string | null> {
         if (apiCallData) {
             // Broadcast progress update
             broadcastTypingUpdate("Finding weather information...");
-            
+
             apiData = await getWeatherData(apiCallData.location, apiCallData.frequency);
             weatherData = apiData;
-            
+
             // Broadcast progress update
             broadcastTypingUpdate("Processing weather data...");
         }
     } catch (error: any) {
         console.error("API processing error:", error.message);
     }
-    
+
     // Broadcast final thinking state
     broadcastTypingUpdate("Generating response...");
-    
+
     // Generate AI response
     let prompt = `
     Current date and time: ${dayjs().format("YYYY-MM-DD HH:mm:ss")}
@@ -317,7 +343,6 @@ Use this real-time weather data to answer the user's query following the instruc
         // Broadcast final response
         broadcastTypingUpdate("Response generated successfully.");
         return response;
-        
     } catch (error: any) {
         console.error("AI generation error:", error.message);
         return "I'm having trouble processing your request right now. Please try again later.";
@@ -328,9 +353,9 @@ Use this real-time weather data to answer the user's query following the instruc
 function broadcastTypingUpdate(statusMessage: string): void {
     console.log("Broadcasting typing status:", statusMessage);
     for (const client of connectedClients) {
-        client.socket.emit("ai_typing_status", { 
+        client.socket.emit("ai_typing_status", {
             isTyping: true,
-            statusMessage
+            statusMessage,
         });
     }
 }
@@ -388,20 +413,22 @@ Return your answer in JSON format that can be parsed with JSON.parse():
 
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
-        
+
         // Extract JSON from the response (if the AI wraps it in code blocks)
-        const jsonMatch = responseText.match(/```(?:json)?([\s\S]*?)```/) || [null, responseText];
+        const jsonMatch = responseText.match(/```(?:json)?([\s\S]*?)```/) || [
+            null,
+            responseText,
+        ];
         const jsonText = jsonMatch[1].trim();
-        
+
         // Parse the JSON
         const suggestions: Suggestion[] = JSON.parse(jsonText);
-        
+
         // Validate suggestions
-        const validSuggestions = suggestions
-            .filter(s => s.content && s.lucideIcon);
-            
+        const validSuggestions = suggestions.filter((s) => s.content && s.lucideIcon);
+
         console.log("Generated suggestions with icons:", validSuggestions);
-        
+
         return validSuggestions;
     } catch (error: any) {
         console.error("Suggestion generation error:", error);
@@ -409,7 +436,7 @@ Return your answer in JSON format that can be parsed with JSON.parse():
         return [
             { content: "What's the weather like today?", lucideIcon: "CloudRain" },
             { content: "Tell me about climate change", lucideIcon: "Globe" },
-            { content: "How can I reduce my carbon footprint?", lucideIcon: "Leaf" }
+            { content: "How can I reduce my carbon footprint?", lucideIcon: "Leaf" },
         ];
     }
 }
@@ -433,7 +460,7 @@ app.post(
                     content: message,
                 },
             ],
-            suggestions: [] // Initialize empty suggestions
+            suggestions: [], // Initialize empty suggestions
         };
         const response = await generateResponse();
         activeChat.history.push({ role: "Assistant", content: response });
@@ -452,11 +479,9 @@ app.post(
     asyncHandler(async (req, res) => {
         console.log("POST /chat");
         if (!activeChat) {
-            return res
-                .status(400)
-                .json({
-                    error: "No active chat. Please create a new chat via /chat/new",
-                });
+            return res.status(400).json({
+                error: "No active chat. Please create a new chat via /chat/new",
+            });
         }
         const { message } = req.body;
         if (!message || typeof message !== "string") {
@@ -480,11 +505,9 @@ app.get(
     asyncHandler(async (req, res) => {
         console.log("GET /chat");
         if (!activeChat) {
-            return res
-                .status(400)
-                .json({
-                    error: "No active chat. Please create a new chat via /chat/new",
-                });
+            return res.status(400).json({
+                error: "No active chat. Please create a new chat via /chat/new",
+            });
         }
         res.json(activeChat.history);
     }),

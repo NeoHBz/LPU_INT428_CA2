@@ -530,7 +530,11 @@ export default function LearnPage() {
                                     </div>
                                     <div className="bg-gray-100 p-4 rounded-lg">
                                         <div className="aspect-video bg-white rounded-lg flex items-center justify-center outline outline-2 outline-black">
-                                            <img src="/static/Carbon Cycle Infographic.png" alt="Carbon Cycle Infographic" className="rounded-lg w-full h-auto object-cover user-select-none pointer-events-none" />
+                                            <img
+                                                src="/static/Carbon Cycle Infographic.png"
+                                                alt="Carbon Cycle Infographic"
+                                                className="rounded-lg w-full h-auto object-cover user-select-none pointer-events-none"
+                                            />
                                         </div>
                                         <p className="text-center text-gray-500 mt-2">
                                             Carbon Cycle Infographic
@@ -604,7 +608,11 @@ export default function LearnPage() {
                                             </div>
                                             <div className="bg-gray-100 p-4 rounded-lg">
                                                 <div className="aspect-square bg-white rounded-lg flex items-center justify-center">
-                                                    <img src="/static/Temperature Change Graph.png" alt="Temperature Change Graph" className="rounded-lg w-full h-auto object-cover user-select-none pointer-events-none" />
+                                                    <img
+                                                        src="/static/Temperature Change Graph.png"
+                                                        alt="Temperature Change Graph"
+                                                        className="rounded-lg w-full h-auto object-cover user-select-none pointer-events-none"
+                                                    />
                                                 </div>
                                                 <p className="text-center text-gray-500 mt-2">
                                                     Temperature Change Graph
@@ -657,7 +665,7 @@ export default function LearnPage() {
                                                     Change
                                                 </li>
                                             </ul>
-                                                And many more...
+                                            And many more...
                                         </div>
                                     </AccordionContent>
                                 </AccordionItem>
