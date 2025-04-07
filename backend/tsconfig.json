@@ -1,28 +1,21 @@
 {
     "compilerOptions": {
-        "outDir": "dist",
-        "lib": ["es2023"],
-        "module": "node16",
-        "target": "es2022",
-        "strict": true,
+        "module": "esnext",
         "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "strict": true,
+        "outDir": "dist",
         "skipLibCheck": true,
-        "moduleResolution": "node16",
+        "lib": ["es2023"],
+        "target": "es2022",
         "sourceMap": true,
         "moduleDetection": "force",
+        "moduleResolution": "bundler",
         "jsx": "react-jsx",
         "allowJs": true,
-
-        // Bundler mode
-        // "allowImportingTsExtensions": true,
-        "verbatimModuleSyntax": true,
-        // "noEmit": true,
-
         "noFallthroughCasesInSwitch": true,
-
-        // Some stricter flags (disabled by default)
         "noUnusedLocals": false,
         "noUnusedParameters": false,
-        "noPropertyAccessFromIndexSignature": false
+        "noPropertyAccessFromIndexSignature": false,
     }
 }
