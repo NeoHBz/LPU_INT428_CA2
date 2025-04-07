@@ -160,7 +160,7 @@ const defaultSuggestions: Suggestion[] = [
     },
 ];
 
-const serverBaseURL: string = process.env.SERVER_BASE_URL ?? "http://localhost:9999";
+const serverBaseURL: string = process.env.NEXT_PUBLIC_SERVER_BASE_URL ?? "http://localhost:9999";
 
 export default function ChatPage() {
     const [showInfo, setShowInfo] = useState(false);

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { StatusResponse, Chat } from "./types";
 
-const serverBaseURL: string = process.env.SERVER_BASE_URL ?? "http://localhost:9999";
+const serverBaseURL: string = process.env.NEXT_PUBLIC_SERVER_BASE_URL ?? "http://localhost:9999";
 
 export const chatApi = createApi({
     reducerPath: "chatApi",
