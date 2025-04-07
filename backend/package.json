@@ -1,0 +1,30 @@
+{
+    "name": "ai_project",
+    "module": "index.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "build": "tsc src/index.ts",
+        "start": "node dist/index.ts",
+        "dev": "tsx --watch src/index.ts"
+    },
+    "devDependencies": {
+        "@types/bun": "latest",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^5.0.1"
+    },
+    "peerDependencies": {
+        "typescript": "^5.8.2"
+    },
+    "dependencies": {
+        "@google/generative-ai": "^0.24.0",
+        "@types/socket.io": "^3.0.2",
+        "axios": "^1.8.4",
+        "cors": "^2.8.5",
+        "dayjs": "^1.11.13",
+        "dotenv": "^16.4.7",
+        "express": "^5.1.0",
+        "socket.io": "^4.8.1",
+        "uuidv4": "^6.2.13"
+    }
+}
