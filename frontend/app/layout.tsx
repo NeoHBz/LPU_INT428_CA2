@@ -10,6 +10,26 @@ export const metadata = {
     title: "Climate Action - Educational Climate Change Awareness",
     description:
         "Learn about climate change, calculate your carbon footprint, and discover solutions with our AI-powered climate education platform.",
+    keywords: [
+        "climate change",
+        "climate action",
+        "climate awareness",
+        "carbon footprint",
+        "sustainability",
+        "environmental education",
+        "climate solutions",
+        "AI-powered education",
+        "climate change calculator",
+    ],
+    image: "https://lpu-int-428-ca2.vercel.app/static/og_image.png",
+    images: [
+        {
+            url: "https://lpu-int-428-ca2.vercel.app/static/og_image.png",
+            width: 1200,
+            height: 630,
+            alt: "Climate Action",
+        },
+    ],
     openGraph: {
         title: "Climate Action - Educational Climate Change Awareness",
         description:
@@ -18,7 +38,7 @@ export const metadata = {
         siteName: "Climate Action",
         images: [
             {
-                url: "https://lpu-int-428-ca2.vercel.app/static/og-image.png",
+                url: "https://lpu-int-428-ca2.vercel.app/static/og_image.png",
                 width: 1200,
                 height: 630,
                 alt: "Climate Action",
@@ -32,7 +52,12 @@ export const metadata = {
         title: "Climate Action - Educational Climate Change Awareness",
         description:
             "Learn about climate change, calculate your carbon footprint, and discover solutions with our AI-powered climate education platform.",
-        images: ["https://lpu-int-428-ca2.vercel.app/static/og-image.png"],
+        images: [
+            {
+                url: "https://lpu-int-428-ca2.vercel.app/static/og_image.png",
+                alt: "Climate Action",
+            },
+        ],
     },
 };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
