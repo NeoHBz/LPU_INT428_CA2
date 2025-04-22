@@ -2,6 +2,24 @@ import Link from "next/link";
 import { Facebook, Twitter, Instagram, Mail } from "lucide-react";
 
 export default function Footer() {
+    const Link = ({
+        href,
+        children,
+        className,
+    }: {
+        href: string;
+        children: React.ReactNode;
+        className?: string;
+    }) => (
+        <a
+            href={href}
+            className={`text-green-400 hover:text-white ${className}`}
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            {children}
+        </a>
+    );
     return (
         <footer className="bg-gray-900 text-white">
             <div className="container mx-auto px-4 py-12">
@@ -111,12 +129,7 @@ export default function Footer() {
                         <p className="text-gray-400 mb-2">
                             Have questions or suggestions?
                         </p>
-                        <a
-                            href="mailto:info@climateaction.org"
-                            className="text-green-400 hover:text-green-300"
-                        >
-                            info@climateaction.org
-                        </a>
+                        <a href="mailto:info@climateaction.org">info@climateaction.org</a>
                         <p className="text-gray-400 mt-4">
                             Subscribe to our newsletter for updates on climate science and
                             action.
@@ -139,6 +152,16 @@ export default function Footer() {
                         </Link>
                     </p>
                 </div>
+            </div>
+            {/* sticky footer */}
+            <div className="fixed bottom-0 left-0 right-0 bg-gray-900 text-white py-2 text-center">
+                <p className="text-md flex justify-around">
+                    <Link href="https://github.com/archita050206">
+                        Archita Das (12307421)
+                    </Link>
+                    <Link href="https://github.com/neohbz">Saurav Lal (12316153)</Link>
+                    <Link href="https://github.com/Tejas383">Tejasvita (12314183)</Link>
+                </p>
             </div>
         </footer>
     );
